@@ -22,4 +22,4 @@ pymupdf==1.25.3                # Required for PyMuPDFLoader
 pydantic==2.9.0               # Required by Langchain and other dependencies
 
 # guarrails
-#nemoguardrails==0.12.0
+nemoguardrails==0.12.0
