@@ -1,0 +1,25 @@
+numpy==1.26.4
+#pysqlite3-binary
+# Langchain Core Functionality
+langchain==0.3.19                 # Required for core Langchain functionality (chains, retrievers, memory)
+langchain-community==0.3.18    # Required for document loaders and vector stores
+langchain-huggingface==0.1.2   # Required for HuggingFace integration with Langchain
+langchain-ollama==0.2.3        # Required for ChatOllama
+
+# Vector Database and Retrieval
+chromadb==0.4.22               # Required for Chroma vector database
+rank-bm25==0.2.2               # Required for BM25 retrieval
+
+# Machine Learning Models
+sentence-transformers==2.7.0   # Required for HuggingFaceEmbeddings
+transformers==4.40.0           # Required for HuggingFaceEmbeddings
+
+# Document Loading
+pymupdf==1.25.3                # Required for PyMuPDFLoader
+
+# Additional Dependencies
+# pydantic==2.7.4                # Required by Langchain and other dependencies
+pydantic==2.9.0               # Required by Langchain and other dependencies
+
+# guarrails
+#nemoguardrails==0.12.0

@@ -1,0 +1,8 @@
+1. https://ollama.com/library/llama3.2:1b
+down load ollama and install on machine.
+2. open command prompt 
+ollama list
+3. run command 
+ollama run llama3.2:1b
+4. open code in vscode
+5. pip install -r requirements.txt

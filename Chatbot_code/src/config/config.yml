@@ -1,0 +1,46 @@
+models:
+ - type: main
+   engine: ollama
+   model: llama3.2:1b
+   temperature: 0.7
+   base_url: http://localhost:11434
+rails:
+  input:
+    flows:
+      - self check input
+  output:
+    flows:
+      - self check output
+
+# models:
+#   - type: main
+#     engine: ollama
+#     model: llama3.2:1b
+#     temperature: 0.7
+#     base_url: http://localhost:11434
+
+# instructions:
+#   - type: general
+#     content: |
+#       You are a helpful assistant. Always provide accurate and concise answers.
+#       Avoid generating harmful, offensive, or inappropriate content.
+
+# rails:
+#   input:
+#     flows:
+#       - content safety check input $model=llama_local_safety
+
+#   output:
+#     flows:
+#       - content safety check output $model=llama_local_safety
+
+# sample_conversation: |
+#   user: "Hi!"
+#   bot: "Hello! How can I assist you today?"
+
+# policies:
+#   - name: block_harmful_content
+#     description: Blocks harmful or inappropriate content in user queries.
+#     triggers:
+#       - when: "user_input contains 'harmful' or 'offensive'"
+#         action: "block"
