@@ -1,5 +1,11 @@
 <rail version="0.1">
   <output>
-    <string name="answer" description="Answer to the user's question." format=".*" />
+    <string 
+      name="answer" 
+      description="Answer to the user's question."
+      guard="guardrails.guard.validators.groundedness"
+      context="context"
+      threshold="0.6"
+    />
   </output>
 </rail>

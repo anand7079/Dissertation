@@ -108,13 +108,18 @@ def run_query_with_guardrails(user_query):
         prompt_params={"question": user_query, "context": context}
     )
     # Extract validated output
-    validated_output = validation_result.validated_output
+    #validated_output = validation_result.validated_output
 
-    # Fallback to raw output if validation failed or answer is None
-    if validated_output is None or validated_output.get('answer') is None:
-        return raw_output
+    #  Handle fallback if answer not validated
+    try:
+        validated_answer = validation_result.validated_output["answer"]
+    except (AttributeError, KeyError, TypeError):
+        return f"[Fallback: Could not validate]\n\n{raw_output}"
 
-    return validation_result.validated_output
+    if not validated_answer or validated_answer.strip().lower() in ["", "none", "null"]:
+        return f"[Fallback: Not grounded in context]\n\n{raw_output}"
+
+    return validated_answer
 
 
 # --- Streamlit UI ---
@@ -124,6 +129,8 @@ def run_streamlit_ui(qa_chain):
 
     if user_input:
         result = run_query_with_guardrails(user_input)
+        if result.startswith("[Fallback:"):
+            st.warning("⚠️ This answer may not be grounded in the provided documents.")
         st.markdown("### Answer:")
         st.write(result)
 
