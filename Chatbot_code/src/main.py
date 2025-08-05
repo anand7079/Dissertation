@@ -76,7 +76,11 @@ def get_qa_chain(pdf_dir: str, persist_dir: str):
     from langchain.retrievers.ensemble import EnsembleRetriever
     ensemble_retriever = EnsembleRetriever(retrievers=[chroma_retriever, bm25_retriever], weights=[0.5, 0.5])
 
-    llm = Ollama(model="tinyllama")
+    llm = Ollama(
+    model="tinyllama",
+    temperature=0.2,  # Lower temp = more deterministic
+    stop=["}"],       # Encourage it to stop right after closing JSON
+)
     qa = RetrievalQA.from_chain_type(llm=llm, retriever=ensemble_retriever)
     return qa
 
@@ -109,6 +113,13 @@ def run_query_with_guardrails(user_query):
     )
     # Extract validated output
     #validated_output = validation_result.validated_output
+    print("=== Raw LLM Output ===")
+    print(raw_output)
+
+    print("=== Guardrails Validation Output ===")
+    print(validation_result)
+    print("validated_output:", validation_result.validated_output)
+
 
     #  Handle fallback if answer not validated
     try:

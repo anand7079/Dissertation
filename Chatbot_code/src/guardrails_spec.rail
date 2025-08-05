@@ -1,11 +1,19 @@
 <rail version="0.1">
+  <prompt>
+You are a helpful assistant answering user questions based only on the context below.
+Respond strictly in JSON format.
+
+<context>
+{{context}}
+</context>
+
+Question: {{question}}
+
+Format:
+{"answer": "&lt;your concise and helpful answer here&gt;"}
+  </prompt>
+
   <output>
-    <string 
-      name="answer" 
-      description="Answer to the user's question."
-      guard="guardrails.guard.validators.groundedness"
-      context="context"
-      threshold="0.6"
-    />
+    <string name="answer" description="Answer to the user's question." />
   </output>
 </rail>
