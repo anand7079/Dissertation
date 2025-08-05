@@ -1,0 +1,40 @@
+schema_version: 1
+
+output:
+  type: string
+  description: |
+    A helpful, accurate, and ethically sound response based on the PDF documents.
+
+  validations:
+    - type: regex
+      match: .+
+      on_fail: "The response is empty or meaningless. Please try again."
+
+    - type: profanity
+      on_fail: "The response contains offensive or inappropriate language."
+
+    - type: check_facts
+      on_fail: "The response appears factually incorrect. Please provide factual answers based on the PDF content."
+
+    - type: length
+      min: 20
+      max: 5000
+      on_fail: "The response must be concise yet meaningful (between 20 and 500 characters)."
+
+    - type: hallucination
+      on_fail: "Avoid making up information not present in the PDF documents."
+
+    - type: guardrails.custom_validations.no_disallowed_content
+      on_fail: "The response includes disallowed content (e.g., financial, legal, or medical advice)."
+
+    - type: language
+      language: en
+      on_fail: "The response must be in English."
+
+# Custom validation (define separately in code)
+parameters:
+  validations:
+    guardrails.custom_validations.no_disallowed_content:
+      type: python
+      module: custom_validations
+      name: no_disallowed_content

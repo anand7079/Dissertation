@@ -9,6 +9,7 @@ from langchain_community.llms import Ollama
 from langchain.chains import RetrievalQA
 from langchain_community.retrievers.bm25 import BM25Retriever
 from langchain.docstore.document import Document
+from guardrails import Guard
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -88,6 +89,27 @@ def run_cli_mode(qa_chain):
             break
         answer = qa_chain.run(query)
         print("Bot:", answer)
+# --- Guardrails ---
+from guardrails import Guard
+
+guard = Guard.for_rail("guardrails_spec.rail")
+
+def run_query_with_guardrails(user_query):
+    # Retrieve context
+    docs = qa_chain.retriever.get_relevant_documents(user_query)
+    context = "\n\n".join([d.page_content for d in docs])
+
+    # Run your QA LLM chain
+    raw_output = qa_chain.run(user_query)
+
+    # Validate without messages or api
+    validation_result = guard.parse(
+        llm_output=raw_output,
+        prompt_params={"question": user_query, "context": context}
+    )
+
+    return validation_result.validated_output
+
 
 # --- Streamlit UI ---
 def run_streamlit_ui(qa_chain):
@@ -95,7 +117,7 @@ def run_streamlit_ui(qa_chain):
     user_input = st.text_input("Ask a question:")
 
     if user_input:
-        result = qa_chain.run(user_input)
+        result = run_query_with_guardrails(user_input)
         st.markdown("### Answer:")
         st.write(result)
 
