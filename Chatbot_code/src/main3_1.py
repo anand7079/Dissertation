@@ -2,8 +2,8 @@
 # coding: utf-8
 
 # In[4]:
-import os;
-os.system('pip install -r requirements.txt')
+# import os;
+# os.system('pip install -r requirements.txt')
 
 import os
 from langchain_community.document_loaders import PyMuPDFLoader
@@ -32,7 +32,7 @@ st.title("Ollama Chatbot with Streamlit")
 user_input = st.text_input("Ask a question:")
 
 if user_input:
-    response = ollama.chat(model="llama2", messages=[{"role": "user", "content": user_input}])
+    response = ollama.chat(model="tinyllama", messages=[{"role": "user", "content": user_input}])
     st.write("**Response:**", response['message']['content'])
 
 
@@ -116,7 +116,7 @@ bm25_retriever = create_bm25_index(chunks)
 
 # 4. Initialize language model
 llm = ChatOllama(
-    model="llama3.2:1b",
+    model="tinyllama",
     temperature=0.7,
     base_url="http://localhost:11434"
 )
@@ -151,26 +151,6 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 
 # In[4]:
 
-
-# 8. Example conversation sequence
-questions = [
-    "What is the main topic of the document?",
-    "Can you summarize the key points?",
-    "What references are cited in this context?"
-]
-
-for question in questions:
-    result = qa_chain.invoke({"question": question})
-    
-    print(f"\nQuestion: {result['question']}")
-    print(f"Answer: {result['answer']}")
-    
-    # Safely access source documents metadata
-    print("\nSources:")
-    for doc in result['source_documents']:
-        source = doc.metadata.get('source', 'Unknown source')
-        page = doc.metadata.get('page', 'N/A')
-        print(f"- {source} (page {page})")
 
 
 # CLI interface for user input

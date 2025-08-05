@@ -6,3 +6,10 @@ ollama list
 ollama run llama3.2:1b
 4. open code in vscode
 5. pip install -r requirements.txt
+
+to run on streamlit:-
+1.activate venv
+chatbot\Scripts\activate  run this from root folder
+2.then make sure interpreter is selected as chatbot ->ctrl+shift+p->select interpeter-> select chatbot/Scripts/python.exe
+3.to run move to parent directory of main.py and run command 
+streamlit run main.py or from root streamlit run Chatbot_code/src/main.py
