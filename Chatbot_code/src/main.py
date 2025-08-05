@@ -107,6 +107,12 @@ def run_query_with_guardrails(user_query):
         llm_output=raw_output,
         prompt_params={"question": user_query, "context": context}
     )
+    # Extract validated output
+    validated_output = validation_result.validated_output
+
+    # Fallback to raw output if validation failed or answer is None
+    if validated_output is None or validated_output.get('answer') is None:
+        return raw_output
 
     return validation_result.validated_output
 

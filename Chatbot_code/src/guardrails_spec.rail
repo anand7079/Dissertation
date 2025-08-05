@@ -1,5 +1,5 @@
 <rail version="0.1">
   <output>
-    <string name="answer" description="Answer to the user's question." />
+    <string name="answer" description="Answer to the user's question." format=".*" />
   </output>
 </rail>
