@@ -3,7 +3,7 @@ down load ollama and install on machine.
 2. open command prompt 
 ollama list
 3. run command 
-ollama run llama3.2:1b
+ollama run llama3.2:1b or ollama run tinyllama
 4. open code in vscode
 5. pip install -r requirements.txt
 
