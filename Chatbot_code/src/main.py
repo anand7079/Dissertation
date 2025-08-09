@@ -135,7 +135,7 @@ def run_query_with_guardrails(user_query):
 
 # --- Streamlit UI ---
 def run_streamlit_ui(qa_chain):
-    st.title("PDF Chatbot 🤖📄")
+    st.title("Gram Panchayat Query Answering Chatbot🤖📄")
     user_input = st.text_input("Ask a question:")
 
     if user_input:
