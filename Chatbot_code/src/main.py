@@ -9,6 +9,7 @@ from langchain_community.llms import Ollama
 from langchain.chains import RetrievalQA
 from langchain_community.retrievers.bm25 import BM25Retriever
 from langchain.docstore.document import Document
+from guardrails import Guard
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +76,11 @@ def get_qa_chain(pdf_dir: str, persist_dir: str):
     from langchain.retrievers.ensemble import EnsembleRetriever
     ensemble_retriever = EnsembleRetriever(retrievers=[chroma_retriever, bm25_retriever], weights=[0.5, 0.5])
 
-    llm = Ollama(model="tinyllama")
+    llm = Ollama(
+    model="tinyllama",
+    temperature=0.2,  # Lower temp = more deterministic
+    stop=["}"],       # Encourage it to stop right after closing JSON
+)
     qa = RetrievalQA.from_chain_type(llm=llm, retriever=ensemble_retriever)
     return qa
 
@@ -88,14 +93,55 @@ def run_cli_mode(qa_chain):
             break
         answer = qa_chain.run(query)
         print("Bot:", answer)
+# --- Guardrails ---
+from guardrails import Guard
+
+guard = Guard.for_rail("guardrails_spec.rail")
+
+def run_query_with_guardrails(user_query):
+    # Retrieve context
+    docs = qa_chain.retriever.get_relevant_documents(user_query)
+    context = "\n\n".join([d.page_content for d in docs])
+
+    # Run your QA LLM chain
+    raw_output = qa_chain.run(user_query)
+
+    # Validate without messages or api
+    validation_result = guard.parse(
+        llm_output=raw_output,
+        prompt_params={"question": user_query, "context": context}
+    )
+    # Extract validated output
+    #validated_output = validation_result.validated_output
+    print("=== Raw LLM Output ===")
+    print(raw_output)
+
+    print("=== Guardrails Validation Output ===")
+    print(validation_result)
+    print("validated_output:", validation_result.validated_output)
+
+
+    #  Handle fallback if answer not validated
+    try:
+        validated_answer = validation_result.validated_output["answer"]
+    except (AttributeError, KeyError, TypeError):
+        return f"[Fallback: Could not validate]\n\n{raw_output}"
+
+    if not validated_answer or validated_answer.strip().lower() in ["", "none", "null"]:
+        return f"[Fallback: Not grounded in context]\n\n{raw_output}"
+
+    return validated_answer
+
 
 # --- Streamlit UI ---
 def run_streamlit_ui(qa_chain):
-    st.title("PDF Chatbot 🤖📄")
+    st.title("Gram Panchayat Query Answering Chatbot🤖📄")
     user_input = st.text_input("Ask a question:")
 
     if user_input:
-        result = qa_chain.run(user_input)
+        result = run_query_with_guardrails(user_input)
+        # if result.startswith("[Fallback:"):
+        #     st.warning("⚠️ This answer may not be grounded in the provided documents.")
         st.markdown("### Answer:")
         st.write(result)
 
