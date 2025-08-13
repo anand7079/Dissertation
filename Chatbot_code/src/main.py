@@ -140,8 +140,8 @@ def run_streamlit_ui(qa_chain):
 
     if user_input:
         result = run_query_with_guardrails(user_input)
-        if result.startswith("[Fallback:"):
-            st.warning("⚠️ This answer may not be grounded in the provided documents.")
+        # if result.startswith("[Fallback:"):
+        #     st.warning("⚠️ This answer may not be grounded in the provided documents.")
         st.markdown("### Answer:")
         st.write(result)
 
